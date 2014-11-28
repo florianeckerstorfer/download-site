@@ -1,0 +1,7 @@
+parameters:
+    download_site.download_command.class: FlorianEc\DownloadSite\Command\DownloadCommand
+
+services:
+    download_site.download_command:
+        class: "%download_site.download_command.class%"
+        tags: [{name: command}]

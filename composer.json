@@ -1,0 +1,12 @@
+{
+    "name": "florianeckerstorfer/download-site",
+    "require": {
+        "cocur/pli": "dev-master",
+        "kriswallsmith/buzz": "~0.13"
+    },
+    "autoload": {
+        "psr-4": {
+            "FlorianEc\\DownloadSite\\": "src/"
+        }
+    }
+}

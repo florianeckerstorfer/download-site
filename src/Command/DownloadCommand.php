@@ -3,10 +3,12 @@
 namespace FlorianEc\DownloadSite\Command;
 
 use FlorianEc\DownloadSite\Downloader;
+use FlorianEc\DownloadSite\Page;
 use FlorianEc\DownloadSite\Saver;
 use FlorianEc\DownloadSite\Site;
 use League\Url\UrlImmutable;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Logger\ConsoleLogger;
@@ -67,7 +69,9 @@ class DownloadCommand extends Command
 
         $site = new Site(UrlImmutable::createFromUrl($input->getArgument('url')));
 
-        $this->download($site, $output);
+
+        $pageCount = $this->download($site, $output);
+        $this->setupProgressBar($output, $pageCount);
         $this->save($site, $input->getArgument('target-directory'), $output);
     }
 
@@ -75,7 +79,7 @@ class DownloadCommand extends Command
      * @param Site $site
      * @param OutputInterface $output
      *
-     * @return void
+     * @return int Number of downloaded pages
      */
     protected function download(Site $site, OutputInterface $output)
     {
@@ -85,12 +89,12 @@ class DownloadCommand extends Command
 
         $output->writeln('');
         $output->writeln('PAGES:');
-        $count = 0;
         foreach ($site->getPages() as $page) {
             $output->writeln(sprintf('- <comment>%s</comment>', $page->getUrl()));
-            $count++;
         }
-        $output->writeln(sprintf('Downloaded <info>%d pages</info>.', $count));
+        $output->writeln(sprintf('Downloaded <info>%d pages</info>.', $site->getPageCount()));
+
+        return $site->getPageCount();
     }
 
     /**
@@ -107,5 +111,23 @@ class DownloadCommand extends Command
         $count = $this->saver->save($site, $targetDirectory);
 
         $output->writeln(sprintf('Saved <info>%d pages</info>.', $count));
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param int             $max
+     *
+     * @return void
+     */
+    protected function setupProgressBar(OutputInterface $output, $max = 0)
+    {
+        if ($output->getVerbosity() === OutputInterface::VERBOSITY_DEBUG) {
+            return;
+        }
+
+        $progress = new ProgressBar($output, $max);
+        $this->saver->setSavePageCallback(function () use ($progress) {
+            $progress->advance();
+        });
     }
 }

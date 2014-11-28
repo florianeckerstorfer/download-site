@@ -65,6 +65,18 @@ class SiteTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @covers FlorianEc\DownloadSite\Site::getPageCount()
+     */
+    public function getPageCountReturnsTheNumberOfPages()
+    {
+        $page = $this->getPageMock();
+        $this->site->addPage($page);
+
+        $this->assertEquals(1, $this->site->getPageCount());
+    }
+
+    /**
+     * @test
      * @covers FlorianEc\DownloadSite\Site::hasPage()
      */
     public function hasPageReturnsFalseIfSiteHasNoPage()

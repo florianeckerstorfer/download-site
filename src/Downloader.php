@@ -95,7 +95,7 @@ class Downloader
     protected function filterLinks(array $links)
     {
         return array_filter($links, function ($link) {
-            return preg_match('/^(https?|mailto|ftp|data|\/\/)/', $link) === 0;
+            return preg_match('/^(https?|mailto|ftp|data|\/\/|[^a-zA-Z0-9.-_])/', $link) === 0;
         });
     }
 

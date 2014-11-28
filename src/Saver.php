@@ -1,6 +1,8 @@
 <?php
 
 namespace FlorianEc\DownloadSite;
+
+use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PathUtil\Path;
@@ -25,6 +27,11 @@ class Saver
     private $logger;
 
     /**
+     * @var callback
+     */
+    private $savePageCallback = null;
+
+    /**
      * @param Filesystem $filesystem
      */
     public function __construct(Filesystem $filesystem)
@@ -40,6 +47,22 @@ class Saver
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
+
+        return $this;
+    }
+
+    /**
+     * @param callback $callback
+     *
+     * @return Saver
+     */
+    public function setSavePageCallback($callback)
+    {
+        if (is_callable($callback) === false) {
+            throw new InvalidArgumentException('The given callback is not callable.');
+        }
+
+        $this->savePageCallback = $callback;
 
         return $this;
     }
@@ -69,7 +92,8 @@ class Saver
      */
     protected function savePage(Page $page, $targetDirectory)
     {
-        $filename = Path::makeAbsolute(ltrim($page->getUrl()->getPath(), '/'), $targetDirectory);
+        $path = urldecode($page->getUrl()->getPath());
+        $filename = Path::makeAbsolute(ltrim($path, '/'), $targetDirectory);
         if (FileUtil::hasExtension($filename) === false) {
             $filename = sprintf('%s%sindex.html', rtrim($filename, DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
         }
@@ -80,7 +104,10 @@ class Saver
         }
 
         file_put_contents($filename, $page->getContent());
-        $this->log('info', sprintf('Saved file %s', $page->getUrl()->getPath()));
+        $this->log('debug', sprintf('Saved file %s', $page->getUrl()->getPath()));
+        if ($this->savePageCallback) {
+            call_user_func($this->savePageCallback, $page);
+        }
     }
 
     /**

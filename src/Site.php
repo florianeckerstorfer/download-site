@@ -108,4 +108,12 @@ class Site
     {
         return $this->pages;
     }
+
+    /**
+     * @return int
+     */
+    public function getPageCount()
+    {
+        return count($this->pages);
+    }
 }

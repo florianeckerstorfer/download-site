@@ -75,7 +75,8 @@ class Downloader
         $links = array_merge(
             $this->getHrefLinks($page),
             $this->getSrcLinks($page),
-            $this->getSrcsetLinks($page)
+            $this->getSrcsetLinks($page),
+            $this->getCssSrcLinks($page)
             // TODO: Get image files from CSS
             // TODO: Get font files from CSS
         );
@@ -146,6 +147,22 @@ class Downloader
         }
 
         return $links;
+    }
+
+    /**
+     * @param Page $page
+     *
+     * @return string[]
+     */
+    protected function getCssSrcLinks(Page $page)
+    {
+        if (preg_match('/\.css$/', $page->getUrl()) !== 1) {
+            return [];
+        }
+
+        if (preg_match_all('/url\((.*?)\)/', $page->getContent(), $matches) && isset($matches[1])) {
+            return $matches[1];
+        }
     }
 
     /**

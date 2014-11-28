@@ -63,8 +63,10 @@ class Page
         }
         if (preg_match('/^\//', $link) === 1) {
             $url = sprintf('%s%s', $site->getBaseUrl(), ltrim($link, '/'));
-        } else {
+        } else if (preg_match('/^https?/', $link) !== 1) {
             $url = UrlUtil::getAbsoluteUrl($link, $parent->getUrl());
+        } else {
+            $url = $link;
         }
 
         return new self(UrlImmutable::createFromUrl($url), $site);

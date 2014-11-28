@@ -82,7 +82,7 @@ class Downloader
             // TODO: Get font files from CSS
         );
 
-        foreach ($this->filterLinks($links) as $link) {
+        foreach ($this->filterLinks($links, $page->getSite()) as $link) {
             $linkPage = Page::createFromLink($link, $page, $page->getSite());
             $this->log('debug', sprintf('Found link: %s', $linkPage->getUrl()));
             $page->addLink($linkPage);
@@ -91,12 +91,19 @@ class Downloader
 
     /**
      * @param string[] $links
+     * @param Site     $site
      *
      * @return string[]
      */
-    protected function filterLinks(array $links)
+    protected function filterLinks(array $links, Site $site)
     {
-        return array_filter($links, function ($link) {
+        return array_filter($links, function ($link) use ($site) {
+            $baseUrl = $site->getBaseUrl()->__toString();
+            $baseUrl = str_replace(['/', '.', '?'], ['\/', '\.', '\?'], $baseUrl);
+            if (preg_match(sprintf('/^%s/', $baseUrl), $link) === 1) {
+                return true;
+            }
+
             return preg_match('/^(https?|mailto|ftp|data|\/\/|[^a-zA-Z0-9.-_])/', $link) === 0;
         });
     }

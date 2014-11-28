@@ -1,7 +1,26 @@
 parameters:
     download_site.download_command.class: FlorianEc\DownloadSite\Command\DownloadCommand
+    download_site.buzz.class: Buzz\Browser
+    download_site.downloader.class: FlorianEc\DownloadSite\Downloader
+    download_site.saver.class: FlorianEc\DownloadSite\Saver
+    download_site.filesystem.class: Symfony\Component\Filesystem\Filesystem
 
 services:
     download_site.download_command:
         class: "%download_site.download_command.class%"
+        arguments:
+            - @download_site.downloader
+            - @download_site.saver
         tags: [{name: command}]
+    download_site.downloader:
+        class: "%download_site.downloader.class%"
+        arguments:
+            - @download_site.buzz
+    download_site.saver:
+        class: "%download_site.saver.class%"
+        arguments:
+            - @download_site.filesystem
+    download_site.buzz:
+        class: "%download_site.buzz.class%"
+    download_site.filesystem:
+        class: "%download_site.filesystem.class%"

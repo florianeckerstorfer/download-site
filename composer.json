@@ -2,7 +2,15 @@
     "name": "florianeckerstorfer/download-site",
     "require": {
         "cocur/pli": "dev-master",
-        "kriswallsmith/buzz": "~0.13"
+        "kriswallsmith/buzz": "~0.13",
+        "league/url": "~3.0",
+        "psr/log": "~1.0",
+        "symfony/filesystem": "~2.5",
+        "webmozart/path-util": "~1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.3",
+        "mockery/mockery": "~0.9"
     },
     "autoload": {
         "psr-4": {

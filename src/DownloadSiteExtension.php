@@ -13,6 +13,8 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
  * @package   FlorianEc\DownloadSite
  * @author    Florian Eckerstorfer <florian@eckerstorfer.co>
  * @copyright 2014 Florian Eckerstorfer
+ *
+ * @codeCoverageIgnore
  */
 class DownloadSiteExtension implements ExtensionInterface
 {

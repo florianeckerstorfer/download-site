@@ -70,8 +70,7 @@ class DownloadCommand extends Command
         $site = new Site(UrlImmutable::createFromUrl($input->getArgument('url')));
 
 
-        $pageCount = $this->download($site, $output);
-        $this->setupProgressBar($output, $pageCount);
+        $this->download($site, $output);
         $this->save($site, $input->getArgument('target-directory'), $output);
     }
 
@@ -108,6 +107,7 @@ class DownloadCommand extends Command
     {
         $output->writeln(sprintf('Save site to <info>%s</info>', $targetDirectory));
 
+        $this->setupProgressBar($output, $site->getPageCount());
         $count = $this->saver->save($site, $targetDirectory);
 
         $output->writeln(sprintf('Saved <info>%d pages</info>.', $count));
@@ -126,6 +126,7 @@ class DownloadCommand extends Command
         }
 
         $progress = new ProgressBar($output, $max);
+        $progress->start();
         $this->saver->setSavePageCallback(function () use ($progress) {
             $progress->advance();
         });

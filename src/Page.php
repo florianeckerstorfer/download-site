@@ -51,17 +51,23 @@ class Page
 
     /**
      * @param string $link
+     * @param Page   $parent
      * @param Site   $site
      *
      * @return Page
      */
-    public static function createFromLink($link, Site $site)
+    public static function createFromLink($link, Page $parent, Site $site)
     {
         if (strpos($link, '#') > -1) {
             $link = substr($link, 0, strpos($link, '#'));
         }
+        if (preg_match('/^\//', $link) === 1) {
+            $url = sprintf('%s%s', $site->getBaseUrl(), ltrim($link, '/'));
+        } else {
+            $url = UrlUtil::getAbsoluteUrl($link, $parent->getUrl());
+        }
 
-        return new self(UrlImmutable::createFromUrl(sprintf('%s%s', $site->getBaseUrl(), ltrim($link, '/'))), $site);
+        return new self(UrlImmutable::createFromUrl($url), $site);
     }
 
     /**

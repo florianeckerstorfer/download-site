@@ -59,16 +59,48 @@ class PageTest extends \PHPUnit_Framework_TestCase
      * @covers FlorianEc\DownloadSite\Page::getUrl()
      * @covers FlorianEc\DownloadSite\Page::getSite()
      */
-    public function createFromLinkCreatesPageFromLinkAndSite()
+    public function createFromLinkCreatesPageFromRootLinkAndSite()
     {
         /** @var \FlorianEc\DownloadSite\Site|\Mockery\MockInterface $site */
         $site = Mockery::mock('FlorianEc\DownloadSite\Site');
         $site->shouldReceive('getBaseUrl')->andReturn('https://florian.ec/');
 
-        $page = Page::createFromLink('/articles', $site);
+        /** @var \FlorianEc\DownloadSite\Page $parent */
+        $parent = Mockery::mock('FlorianEc\DownloadSite\Page');
+
+        $page = Page::createFromLink('/articles', $parent, $site);
 
         $this->assertSame($site, $page->getSite());
         $this->assertEquals('https://florian.ec/articles', $page->getUrl()->__toString());
+    }
+
+    /**
+     * @test
+     * @covers FlorianEc\DownloadSite\Page::createFromLink()
+     * @covers FlorianEc\DownloadSite\Page::__construct()
+     * @covers FlorianEc\DownloadSite\Page::getUrl()
+     * @covers FlorianEc\DownloadSite\Page::getSite()
+     */
+    public function createFromLinkCreatesPageFromRelativeLinkAndSite()
+    {
+        /** @var \FlorianEc\DownloadSite\Site|\Mockery\MockInterface $site */
+        $site = Mockery::mock('FlorianEc\DownloadSite\Site');
+        $site->shouldReceive('getBaseUrl')->andReturn('https://florian.ec/');
+
+        $url = Mockery::mock('League\Url\UrlInterface');
+        $url->shouldReceive('__toString')->andReturn('https://florian.ec/assets/img1/bar.jpg');
+        $url->shouldReceive('getPath')->andReturn('assets/img1/bar.jpg');
+        $url->shouldReceive('getScheme')->andReturn('https');
+        $url->shouldReceive('getHost')->andReturn('florian.ec');
+
+        /** @var \FlorianEc\DownloadSite\Page|Mockery\MockInterface $parent */
+        $parent = Mockery::mock('FlorianEc\DownloadSite\Page');
+        $parent->shouldReceive('getUrl')->andReturn($url);
+
+        $page = Page::createFromLink('../foo.jpg', $parent, $site);
+
+        $this->assertSame($site, $page->getSite());
+        $this->assertEquals('https://florian.ec/assets/foo.jpg', $page->getUrl()->__toString());
     }
 
     /**
@@ -84,7 +116,10 @@ class PageTest extends \PHPUnit_Framework_TestCase
         $site = Mockery::mock('FlorianEc\DownloadSite\Site');
         $site->shouldReceive('getBaseUrl')->andReturn('https://florian.ec/');
 
-        $page = Page::createFromLink('/articles#sub-section', $site);
+        /** @var \FlorianEc\DownloadSite\Page $parent */
+        $parent = Mockery::mock('FlorianEc\DownloadSite\Page');
+
+        $page = Page::createFromLink('/articles#sub-section', $parent, $site);
 
         $this->assertSame($site, $page->getSite());
         $this->assertEquals('https://florian.ec/articles', $page->getUrl()->__toString());

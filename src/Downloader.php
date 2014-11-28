@@ -68,6 +68,7 @@ class Downloader
      */
     public function downloadPage(Page $page)
     {
+        $this->log('debug', sprintf('Downloading URL %s', $page->getUrl()));
         $response = $this->browser->get($page->getUrl());
         $page->download($response->getContent());
         $this->log('info', sprintf('Downloaded page: %s', $page->getUrl()));
@@ -82,7 +83,7 @@ class Downloader
         );
 
         foreach ($this->filterLinks($links) as $link) {
-            $linkPage = Page::createFromLink($link, $page->getSite());
+            $linkPage = Page::createFromLink($link, $page, $page->getSite());
             $this->log('debug', sprintf('Found link: %s', $linkPage->getUrl()));
             $page->addLink($linkPage);
         }

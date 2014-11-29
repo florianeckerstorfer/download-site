@@ -110,6 +110,31 @@ class PageTest extends \PHPUnit_Framework_TestCase
      * @covers FlorianEc\DownloadSite\Page::getUrl()
      * @covers FlorianEc\DownloadSite\Page::getSite()
      */
+    public function createFromLinkCreatesPageFromFullLinkAndSite()
+    {
+        /** @var \FlorianEc\DownloadSite\Site|\Mockery\MockInterface $site */
+        $site = Mockery::mock('FlorianEc\DownloadSite\Site');
+        $site->shouldReceive('getBaseUrl')->andReturn('https://florian.ec/');
+
+        $url = Mockery::mock('League\Url\UrlInterface');
+
+        /** @var \FlorianEc\DownloadSite\Page|Mockery\MockInterface $parent */
+        $parent = Mockery::mock('FlorianEc\DownloadSite\Page');
+        $parent->shouldReceive('getUrl')->andReturn($url);
+
+        $page = Page::createFromLink('https://florian.ec/assets/foo.jpg', $parent, $site);
+
+        $this->assertSame($site, $page->getSite());
+        $this->assertEquals('https://florian.ec/assets/foo.jpg', $page->getUrl()->__toString());
+    }
+
+    /**
+     * @test
+     * @covers FlorianEc\DownloadSite\Page::createFromLink()
+     * @covers FlorianEc\DownloadSite\Page::__construct()
+     * @covers FlorianEc\DownloadSite\Page::getUrl()
+     * @covers FlorianEc\DownloadSite\Page::getSite()
+     */
     public function createFromLinkRemovesAnchorsFromLink()
     {
         /** @var \FlorianEc\DownloadSite\Site|\Mockery\MockInterface $site */
@@ -159,5 +184,17 @@ class PageTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($this->page->isDownloaded());
         $this->assertEquals('hello', $this->page->getContent());
+    }
+
+    /**
+     * @test
+     * @covers FlorianEc\DownloadSite\Page::clear()
+     */
+    public function clearClearContentOfPage()
+    {
+        $this->page->download('hello');
+        $this->page->clear();
+
+        $this->assertNull($this->page->getContent());
     }
 }

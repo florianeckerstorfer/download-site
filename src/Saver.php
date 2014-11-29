@@ -2,10 +2,8 @@
 
 namespace FlorianEc\DownloadSite;
 
-use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PathUtil\Path;
 
 /**
  * Saver
@@ -71,7 +69,7 @@ class Saver
     public function savePage(Page $page)
     {
         $path = urldecode($page->getUrl()->getPath());
-        $filename = Path::makeAbsolute(ltrim($path, '/'), $this->targetDirectory);
+        $filename = $this->targetDirectory.DIRECTORY_SEPARATOR.ltrim($path);
         if (FileUtil::hasExtension($filename) === false) {
             $filename = sprintf('%s%sindex.html', rtrim($filename, DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
         }

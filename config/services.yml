@@ -16,6 +16,7 @@ services:
         class: "%download_site.downloader.class%"
         arguments:
             - @download_site.buzz
+            - @download_site.saver
     download_site.saver:
         class: "%download_site.saver.class%"
         arguments:

@@ -147,4 +147,19 @@ class Page
     {
         return $this->content;
     }
+
+    /**
+     * Clears the page by setting the content to `null` .
+     *
+     * This should be done in order to free some memory, but keep the page object to detect if the page has already
+     * been downloaded.
+     *
+     * @return Page
+     */
+    public function clear()
+    {
+        $this->content = null;
+
+        return $this;
+    }
 }

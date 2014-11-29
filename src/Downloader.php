@@ -20,16 +20,23 @@ class Downloader
     private $browser;
 
     /**
+     * @var Saver
+     */
+    private $saver;
+
+    /**
      * @var LoggerInterface|null
      */
     private $logger;
 
     /**
      * @param Browser $browser
+     * @param Saver   $saver
      */
-    public function __construct(Browser $browser)
+    public function __construct(Browser $browser, Saver $saver)
     {
         $this->browser = $browser;
+        $this->saver   = $saver;
     }
 
     /**
@@ -58,6 +65,7 @@ class Downloader
 
         while ($nextPage = $site->getFirstNotDownloadedPage()) {
             $this->downloadPage($nextPage);
+            $this->saver->savePage($nextPage);
         }
     }
 

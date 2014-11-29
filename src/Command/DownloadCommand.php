@@ -68,10 +68,9 @@ class DownloadCommand extends Command
         $this->saver->setLogger($logger);
 
         $site = new Site(UrlImmutable::createFromUrl($input->getArgument('url')));
-
+        $this->saver->setTargetDirectory($input->getArgument('target-directory'));
 
         $this->download($site, $output);
-        $this->save($site, $input->getArgument('target-directory'), $output);
     }
 
     /**
@@ -94,41 +93,5 @@ class DownloadCommand extends Command
         $output->writeln(sprintf('Downloaded <info>%d pages</info>.', $site->getPageCount()));
 
         return $site->getPageCount();
-    }
-
-    /**
-     * @param Site            $site
-     * @param string          $targetDirectory
-     * @param OutputInterface $output
-     *
-     * @return void
-     */
-    protected function save(Site $site, $targetDirectory, OutputInterface $output)
-    {
-        $output->writeln(sprintf('Save site to <info>%s</info>', $targetDirectory));
-
-        $this->setupProgressBar($output, $site->getPageCount());
-        $count = $this->saver->save($site, $targetDirectory);
-
-        $output->writeln(sprintf('Saved <info>%d pages</info>.', $count));
-    }
-
-    /**
-     * @param OutputInterface $output
-     * @param int             $max
-     *
-     * @return void
-     */
-    protected function setupProgressBar(OutputInterface $output, $max = 0)
-    {
-        if ($output->getVerbosity() === OutputInterface::VERBOSITY_DEBUG) {
-            return;
-        }
-
-        $progress = new ProgressBar($output, $max);
-        $progress->start();
-        $this->saver->setSavePageCallback(function () use ($progress) {
-            $progress->advance();
-        });
     }
 }

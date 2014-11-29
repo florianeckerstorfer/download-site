@@ -22,14 +22,14 @@ class Saver
     private $filesystem;
 
     /**
+     * @var string
+     */
+    private $targetDirectory;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
-
-    /**
-     * @var callback
-     */
-    private $savePageCallback = null;
 
     /**
      * @param Filesystem $filesystem
@@ -37,6 +37,18 @@ class Saver
     public function __construct(Filesystem $filesystem)
     {
         $this->filesystem = $filesystem;
+    }
+
+    /**
+     * @param string $targetDirectory
+     *
+     * @return Saver
+     */
+    public function setTargetDirectory($targetDirectory)
+    {
+        $this->targetDirectory = $targetDirectory;
+
+        return $this;
     }
 
     /**
@@ -52,48 +64,14 @@ class Saver
     }
 
     /**
-     * @param callback $callback
-     *
-     * @return Saver
-     */
-    public function setSavePageCallback($callback)
-    {
-        if (is_callable($callback) === false) {
-            throw new InvalidArgumentException('The given callback is not callable.');
-        }
-
-        $this->savePageCallback = $callback;
-
-        return $this;
-    }
-
-    /**
-     * @param Site   $site
-     * @param string $targetDirectory
-     *
-     * @return integer
-     */
-    public function save(Site $site, $targetDirectory)
-    {
-        $count = 0;
-        foreach ($site->getPages() as $page) {
-            $this->savePage($page, $targetDirectory);
-            $count++;
-        }
-
-        return $count;
-    }
-
-    /**
-     * @param Page   $page
-     * @param string $targetDirectory
+     * @param Page $page
      *
      * @return void
      */
-    protected function savePage(Page $page, $targetDirectory)
+    public function savePage(Page $page)
     {
         $path = urldecode($page->getUrl()->getPath());
-        $filename = Path::makeAbsolute(ltrim($path, '/'), $targetDirectory);
+        $filename = Path::makeAbsolute(ltrim($path, '/'), $this->targetDirectory);
         if (FileUtil::hasExtension($filename) === false) {
             $filename = sprintf('%s%sindex.html', rtrim($filename, DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
         }
@@ -104,10 +82,10 @@ class Saver
         }
 
         file_put_contents($filename, $page->getContent());
-        $this->log('debug', sprintf('Saved file %s', $page->getUrl()->getPath()));
-        if ($this->savePageCallback) {
-            call_user_func($this->savePageCallback, $page);
-        }
+        $this->log('info', sprintf('Saved file %s', $path));
+
+        // Free some memory
+        $page->clear();
     }
 
     /**

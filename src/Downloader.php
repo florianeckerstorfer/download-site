@@ -78,8 +78,6 @@ class Downloader
             $this->getSrcLinks($page),
             $this->getSrcsetLinks($page),
             $this->getCssSrcLinks($page)
-            // TODO: Get image files from CSS
-            // TODO: Get font files from CSS
         );
 
         foreach ($this->filterLinks($links, $page->getSite()) as $link) {

@@ -1,8 +1,8 @@
 <?php
 
-namespace FlorianEc\DownloadSite\Tests;
+namespace FlorianEc\DownloadSite\Tests\Util;
 
-use FlorianEc\DownloadSite\FileUtil;
+use FlorianEc\DownloadSite\Util\FileUtil;
 
 /**
  * FileUtilTest
@@ -16,7 +16,7 @@ class FileUtilTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
-     * @covers FlorianEc\DownloadSite\FileUtil::hasExtension()
+     * @covers FlorianEc\DownloadSite\Util\FileUtil::hasExtension()
      */
     public function hasExtensionReturnsTrueIfFilenameHasExtension()
     {
@@ -28,7 +28,7 @@ class FileUtilTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @covers FlorianEc\DownloadSite\FileUtil::hasExtension()
+     * @covers FlorianEc\DownloadSite\Util\FileUtil::hasExtension()
      */
     public function hasExtensionReturnsFalseIfFilenameHasNoExtension()
     {

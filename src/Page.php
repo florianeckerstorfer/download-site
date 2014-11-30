@@ -2,6 +2,7 @@
 
 namespace FlorianEc\DownloadSite;
 
+use FlorianEc\DownloadSite\Util\UrlUtil;
 use League\Url\UrlImmutable;
 use League\Url\UrlInterface;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace FlorianEc\DownloadSite;
+namespace FlorianEc\DownloadSite\Util;
 
 /**
  * FileUtil

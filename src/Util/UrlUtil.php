@@ -1,6 +1,7 @@
 <?php
 
-namespace FlorianEc\DownloadSite;
+namespace FlorianEc\DownloadSite\Util;
+
 use League\Url\UrlInterface;
 
 /**

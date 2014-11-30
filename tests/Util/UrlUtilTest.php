@@ -1,8 +1,8 @@
 <?php
 
-namespace FlorianEc\DownloadSite\Tests;
+namespace FlorianEc\DownloadSite\Tests\Util;
 
-use FlorianEc\DownloadSite\UrlUtil;
+use FlorianEc\DownloadSite\Util\UrlUtil;
 use League\Url\Url;
 
 /**
@@ -17,7 +17,7 @@ class UrlUtilTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
-     * @covers FlorianEc\DownloadSite\UrlUtil::removeFilename()
+     * @covers FlorianEc\DownloadSite\Util\UrlUtil::removeFilename()
      */
     public function removeFilenameRemovesFilenameFromUrl()
     {
@@ -33,7 +33,7 @@ class UrlUtilTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @covers FlorianEc\DownloadSite\UrlUtil::getAbsoluteUrl()
+     * @covers FlorianEc\DownloadSite\Util\UrlUtil::getAbsoluteUrl()
      */
     public function getAbsoluteUrlReturnsAbsoluteUrl()
     {

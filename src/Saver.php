@@ -2,6 +2,7 @@
 
 namespace FlorianEc\DownloadSite;
 
+use FlorianEc\DownloadSite\Util\FileUtil;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
